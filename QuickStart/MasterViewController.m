@@ -8,6 +8,7 @@
 
 #import "MasterViewController.h"
 #import "DetailViewController.h"
+#import "User.h"
 
 @interface MasterViewController ()
 
@@ -15,6 +16,10 @@
 @end
 
 @implementation MasterViewController
+
+@synthesize upnArray;
+@synthesize upnSearchBar;
+@synthesize filteredUpnArray;
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -27,10 +32,25 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    self.navigationItem.leftBarButtonItem = self.editButtonItem;
-
-    UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
-    self.navigationItem.rightBarButtonItem = addButton;
+    
+    // Sample Data for upnArray
+    upnArray = [NSArray arrayWithObjects:
+                [User NameOfUpn:@"chocolate" name:@"chocolate bar"],
+                [User NameOfUpn:@"chocolate" name:@"chocolate chip"],
+                [User NameOfUpn:@"chocolate" name:@"dark chocolate"],
+                [User NameOfUpn:@"hard" name:@"lollipop"],
+                [User NameOfUpn:@"hard" name:@"User cane"],
+                [User NameOfUpn:@"hard" name:@"jaw breaker"],
+                [User NameOfUpn:@"other" name:@"caramel"],
+                [User NameOfUpn:@"other" name:@"sour chew"],
+                [User NameOfUpn:@"other" name:@"peanut butter cup"],
+                [User NameOfUpn:@"other" name:@"gummi bear"], nil];
+    
+    // Initialize the filteredCandyArray with a capacity equal to the candyArray's capacity
+    self.filteredUpnArray = [NSMutableArray arrayWithCapacity:[upnArray count]];
+    
+    // Reload the table
+    [self.tableView reloadData];
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
 }
 
@@ -68,14 +88,35 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    return self.objects.count;
+    // Check to see whether the normal table or search results table is being displayed and return the count from the appropriate array
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        return [filteredUpnArray count];
+    } else {
+        return [upnArray count];
+    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell" forIndexPath:indexPath];
+    
+ UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TaskPrototypeCell" forIndexPath:indexPath];
+    
+    if ( cell == nil ) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TaskPrototypeCell"];
+    }
 
-    NSDate *object = self.objects[indexPath.row];
-    cell.textLabel.text = [object description];
+    // Create a new Candy Object
+    User *user = nil;
+    // Check to see whether the normal table or search results table is being displayed and set the Candy object from the appropriate array
+    if (tableView == self.searchDisplayController.searchResultsTableView) {
+        user = [filteredUpnArray objectAtIndex:indexPath.row];
+    } else {
+        user = [upnArray objectAtIndex:indexPath.row];
+    }
+
+    // Configure the cell
+    cell.textLabel.text = user.upn;
+    [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
+    
     return cell;
 }
 
@@ -91,6 +132,25 @@
     } else if (editingStyle == UITableViewCellEditingStyleInsert) {
         // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
     }
+}
+
+#pragma mark Content Filtering
+-(void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope {
+    // Update the filtered array based on the search text and scope.
+    // Remove all objects from the filtered search array
+    [self.filteredUpnArray removeAllObjects];
+    // Filter the array using NSPredicate
+    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@",searchText];
+    filteredUpnArray = [NSMutableArray arrayWithArray:[upnArray filteredArrayUsingPredicate:predicate]];
+}
+
+#pragma mark - UISearchDisplayController Delegate Methods
+-(BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString {
+    // Tells the table data source to reload when text changes
+    [self filterContentForSearchText:searchString scope:
+     [[self.searchDisplayController.searchBar scopeButtonTitles] objectAtIndex:[self.searchDisplayController.searchBar selectedScopeButtonIndex]]];
+    // Return YES to cause the search result table view to be reloaded.
+    return YES;
 }
 
 @end
