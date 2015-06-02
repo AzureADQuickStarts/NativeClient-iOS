@@ -30,7 +30,7 @@ bool loadedApplicationSettings;
     return [toTrim stringByTrimmingCharactersInSet:set];
 }
 
-//getToken for generic Web API flows. Returns a token with no additional parameters provided.
+// TODO: getToken for generic Web API flows. Returns a token with no additional parameters provided.
 //
 //
 
@@ -69,6 +69,8 @@ completionHandler:(void (^) (NSString*, NSError*))completionBlock;
                               }
                           }];
 }
+
+// TODO: implement SearchUsersList
 
 +(void) searchUserList:(NSString*)searchString
                 parent:(UIViewController*) parent
