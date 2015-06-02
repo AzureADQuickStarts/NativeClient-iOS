@@ -8,9 +8,13 @@
 
 /* Begin PBXBuildFile section */
 		10DBB82422D718C60ED09A71 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A311A42C3413097EBA882893 /* libPods.a */; };
+		B815A6A21B1CEBB0005AC51D /* GraphAPICaller.m in Sources */ = {isa = PBXBuildFile; fileRef = B815A6A11B1CEBB0005AC51D /* GraphAPICaller.m */; };
+		B815A6A51B1CED1A005AC51D /* settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = B815A6A41B1CED1A005AC51D /* settings.plist */; };
+		B815A6A81B1CED79005AC51D /* AppData.m in Sources */ = {isa = PBXBuildFile; fileRef = B815A6A71B1CED79005AC51D /* AppData.m */; };
+		B815A6AC1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = B815A6AB1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.m */; };
+		B815A6B11B1D09E3005AC51D /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B815A6B01B1D09E3005AC51D /* MasterViewController.m */; };
 		B85B43F61B0E5C45006CEFC8 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B85B43F51B0E5C45006CEFC8 /* main.m */; };
 		B85B43F91B0E5C45006CEFC8 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B85B43F81B0E5C45006CEFC8 /* AppDelegate.m */; };
-		B85B43FC1B0E5C45006CEFC8 /* MasterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B85B43FB1B0E5C45006CEFC8 /* MasterViewController.m */; };
 		B85B43FF1B0E5C45006CEFC8 /* DetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B85B43FE1B0E5C45006CEFC8 /* DetailViewController.m */; };
 		B85B44021B0E5C45006CEFC8 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B85B44001B0E5C45006CEFC8 /* Main.storyboard */; };
 		B85B44041B0E5C45006CEFC8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B85B44031B0E5C45006CEFC8 /* Images.xcassets */; };
@@ -21,13 +25,20 @@
 /* Begin PBXFileReference section */
 		438228CB7E5B40D005EEE685 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		A311A42C3413097EBA882893 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B815A6A11B1CEBB0005AC51D /* GraphAPICaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphAPICaller.m; sourceTree = "<group>"; };
+		B815A6A31B1CEBC6005AC51D /* GraphAPICaller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GraphAPICaller.h; sourceTree = "<group>"; };
+		B815A6A41B1CED1A005AC51D /* settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = settings.plist; sourceTree = "<group>"; };
+		B815A6A61B1CED79005AC51D /* AppData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppData.h; sourceTree = "<group>"; };
+		B815A6A71B1CED79005AC51D /* AppData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppData.m; sourceTree = "<group>"; };
+		B815A6AA1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSDictionary+UrlEncoding.h"; sourceTree = "<group>"; };
+		B815A6AB1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSDictionary+UrlEncoding.m"; sourceTree = "<group>"; };
+		B815A6B01B1D09E3005AC51D /* MasterViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
 		B85B43F01B0E5C45006CEFC8 /* QuickStart.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QuickStart.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B85B43F41B0E5C45006CEFC8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B85B43F51B0E5C45006CEFC8 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B85B43F71B0E5C45006CEFC8 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
 		B85B43F81B0E5C45006CEFC8 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		B85B43FA1B0E5C45006CEFC8 /* MasterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MasterViewController.h; sourceTree = "<group>"; };
-		B85B43FB1B0E5C45006CEFC8 /* MasterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MasterViewController.m; sourceTree = "<group>"; };
 		B85B43FD1B0E5C45006CEFC8 /* DetailViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DetailViewController.h; sourceTree = "<group>"; };
 		B85B43FE1B0E5C45006CEFC8 /* DetailViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DetailViewController.m; sourceTree = "<group>"; };
 		B85B44011B0E5C45006CEFC8 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -91,7 +102,7 @@
 				B85B43F71B0E5C45006CEFC8 /* AppDelegate.h */,
 				B85B43F81B0E5C45006CEFC8 /* AppDelegate.m */,
 				B85B43FA1B0E5C45006CEFC8 /* MasterViewController.h */,
-				B85B43FB1B0E5C45006CEFC8 /* MasterViewController.m */,
+				B815A6B01B1D09E3005AC51D /* MasterViewController.m */,
 				B85B43FD1B0E5C45006CEFC8 /* DetailViewController.h */,
 				B85B43FE1B0E5C45006CEFC8 /* DetailViewController.m */,
 				B85B44001B0E5C45006CEFC8 /* Main.storyboard */,
@@ -100,6 +111,12 @@
 				B85B43F31B0E5C45006CEFC8 /* Supporting Files */,
 				B8878C141B0FED8800BAFF6C /* User.m */,
 				B8878C161B0FEDB200BAFF6C /* User.h */,
+				B815A6A11B1CEBB0005AC51D /* GraphAPICaller.m */,
+				B815A6A31B1CEBC6005AC51D /* GraphAPICaller.h */,
+				B815A6A61B1CED79005AC51D /* AppData.h */,
+				B815A6A71B1CED79005AC51D /* AppData.m */,
+				B815A6AA1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.h */,
+				B815A6AB1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.m */,
 			);
 			path = QuickStart;
 			sourceTree = "<group>";
@@ -109,6 +126,7 @@
 			children = (
 				B85B43F41B0E5C45006CEFC8 /* Info.plist */,
 				B85B43F51B0E5C45006CEFC8 /* main.m */,
+				B815A6A41B1CED1A005AC51D /* settings.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -173,6 +191,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B85B44021B0E5C45006CEFC8 /* Main.storyboard in Resources */,
+				B815A6A51B1CED1A005AC51D /* settings.plist in Resources */,
 				B85B44071B0E5C45006CEFC8 /* LaunchScreen.xib in Resources */,
 				B85B44041B0E5C45006CEFC8 /* Images.xcassets in Resources */,
 			);
@@ -219,9 +238,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				B8878C151B0FED8800BAFF6C /* User.m in Sources */,
+				B815A6AC1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.m in Sources */,
 				B85B43F91B0E5C45006CEFC8 /* AppDelegate.m in Sources */,
-				B85B43FC1B0E5C45006CEFC8 /* MasterViewController.m in Sources */,
+				B815A6A81B1CED79005AC51D /* AppData.m in Sources */,
+				B815A6B11B1D09E3005AC51D /* MasterViewController.m in Sources */,
 				B85B43F61B0E5C45006CEFC8 /* main.m in Sources */,
+				B815A6A21B1CEBB0005AC51D /* GraphAPICaller.m in Sources */,
 				B85B43FF1B0E5C45006CEFC8 /* DetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -9,11 +9,7 @@
 #import "MasterViewController.h"
 #import "DetailViewController.h"
 #import "User.h"
-
-@interface MasterViewController ()
-
-@property NSMutableArray *objects;
-@end
+#import "GraphAPICaller.h"
 
 @implementation MasterViewController
 
@@ -31,20 +27,13 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    [self.searchDisplayController.searchResultsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"TaskPrototypeCell"];
+    
     // Do any additional setup after loading the view, typically from a nib.
     
     // Sample Data for upnArray
-    upnArray = [NSArray arrayWithObjects:
-                [User NameOfUpn:@"chocolate" name:@"chocolate bar"],
-                [User NameOfUpn:@"chocolate" name:@"chocolate chip"],
-                [User NameOfUpn:@"chocolate" name:@"dark chocolate"],
-                [User NameOfUpn:@"hard" name:@"lollipop"],
-                [User NameOfUpn:@"hard" name:@"User cane"],
-                [User NameOfUpn:@"hard" name:@"jaw breaker"],
-                [User NameOfUpn:@"other" name:@"caramel"],
-                [User NameOfUpn:@"other" name:@"sour chew"],
-                [User NameOfUpn:@"other" name:@"peanut butter cup"],
-                [User NameOfUpn:@"other" name:@"gummi bear"], nil];
+    upnArray = [NSMutableArray array];
     
     // Initialize the filteredCandyArray with a capacity equal to the candyArray's capacity
     self.filteredUpnArray = [NSMutableArray arrayWithCapacity:[upnArray count]];
@@ -98,13 +87,12 @@
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
     
- UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TaskPrototypeCell" forIndexPath:indexPath];
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"TaskPrototypeCell" forIndexPath:indexPath];
     
     if ( cell == nil ) {
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@"TaskPrototypeCell"];
     }
-
-    // Create a new Candy Object
+    
     User *user = nil;
     // Check to see whether the normal table or search results table is being displayed and set the Candy object from the appropriate array
     if (tableView == self.searchDisplayController.searchResultsTableView) {
@@ -112,7 +100,7 @@
     } else {
         user = [upnArray objectAtIndex:indexPath.row];
     }
-
+    
     // Configure the cell
     cell.textLabel.text = user.upn;
     [cell setAccessoryType:UITableViewCellAccessoryDisclosureIndicator];
@@ -139,9 +127,35 @@
     // Update the filtered array based on the search text and scope.
     // Remove all objects from the filtered search array
     [self.filteredUpnArray removeAllObjects];
-    // Filter the array using NSPredicate
-    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"SELF.name contains[c] %@",searchText];
-    filteredUpnArray = [NSMutableArray arrayWithArray:[upnArray filteredArrayUsingPredicate:predicate]];
+    
+    
+    // Create an array based on search critera.
+   
+    if (searchText.length > 0) {
+        
+        [GraphAPICaller searchUserList:searchText parent:self completionBlock:^(NSMutableArray* returnedUpns, NSError* error) {
+            if (returnedUpns) {
+                
+                NSLog(@"Data returned: %@",filteredUpnArray);
+                self.upnArray = returnedUpns;
+                
+            }
+            else
+            {
+                UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:nil message:[[NSString alloc]initWithFormat:@"Error : %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"Retry" otherButtonTitles:@"Cancel", nil];
+                
+                [alertView setDelegate:self];
+                
+                dispatch_async(dispatch_get_main_queue(),^ {
+                    [alertView show];
+                });
+            }
+            
+        }];
+            
+            
+    }
+    
 }
 
 #pragma mark - UISearchDisplayController Delegate Methods
