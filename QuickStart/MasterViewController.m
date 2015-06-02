@@ -34,6 +34,7 @@
     
     // Sample Data for upnArray
     upnArray = [NSMutableArray array];
+
     
     // Initialize the filteredCandyArray with a capacity equal to the candyArray's capacity
     self.filteredUpnArray = [NSMutableArray arrayWithCapacity:[upnArray count]];
@@ -59,16 +60,6 @@
 
 #pragma mark - Segues
 
-- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
-    if ([[segue identifier] isEqualToString:@"showDetail"]) {
-        NSIndexPath *indexPath = [self.tableView indexPathForSelectedRow];
-        NSDate *object = self.objects[indexPath.row];
-        DetailViewController *controller = (DetailViewController *)[[segue destinationViewController] topViewController];
-        [controller setDetailItem:object];
-        controller.navigationItem.leftBarButtonItem = self.splitViewController.displayModeButtonItem;
-        controller.navigationItem.leftItemsSupplementBackButton = YES;
-    }
-}
 
 #pragma mark - Table View
 
@@ -79,7 +70,7 @@
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Check to see whether the normal table or search results table is being displayed and return the count from the appropriate array
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        return [filteredUpnArray count];
+        return [upnArray count];
     } else {
         return [upnArray count];
     }
@@ -96,7 +87,7 @@
     User *user = nil;
     // Check to see whether the normal table or search results table is being displayed and set the Candy object from the appropriate array
     if (tableView == self.searchDisplayController.searchResultsTableView) {
-        user = [filteredUpnArray objectAtIndex:indexPath.row];
+        user = [upnArray objectAtIndex:indexPath.row];
     } else {
         user = [upnArray objectAtIndex:indexPath.row];
     }
@@ -108,36 +99,18 @@
     return cell;
 }
 
-- (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath {
-    // Return NO if you do not want the specified item to be editable.
-    return YES;
-}
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [self.objects removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-    }
-}
 
-#pragma mark Content Filtering
--(void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope {
-    // Update the filtered array based on the search text and scope.
-    // Remove all objects from the filtered search array
-    [self.filteredUpnArray removeAllObjects];
+-(void)lookupInGraph:(NSString *)searchText {
+if (searchText.length > 0) {
     
     
-    // Create an array based on search critera.
-   
-    if (searchText.length > 0) {
-        
         [GraphAPICaller searchUserList:searchText parent:self completionBlock:^(NSMutableArray* returnedUpns, NSError* error) {
             if (returnedUpns) {
                 
-                NSLog(@"Data returned: %@",filteredUpnArray);
-                self.upnArray = returnedUpns;
+                
+                upnArray = returnedUpns;
+                
                 
             }
             else
@@ -151,10 +124,26 @@
                 });
             }
             
+            
         }];
-            
-            
-    }
+    
+    
+} }
+
+
+#pragma mark Content Filtering
+-(void)filterContentForSearchText:(NSString*)searchText scope:(NSString*)scope {
+    // Update the filtered array based on the search text and scope.
+    // Remove all objects from the filtered search array
+    
+    [self lookupInGraph:searchText];
+    [self.tableView reloadData];
+    
+
+    
+    
+    
+    
     
 }
 

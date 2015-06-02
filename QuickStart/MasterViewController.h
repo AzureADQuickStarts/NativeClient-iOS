@@ -13,10 +13,11 @@
 @interface MasterViewController : UITableViewController <UISearchBarDelegate, UISearchDisplayDelegate>
 
 @property (strong, nonatomic) DetailViewController *detailViewController;
-@property (strong,nonatomic) NSArray *upnArray;
+@property (strong,nonatomic) NSMutableArray *upnArray;
 @property (strong,nonatomic) NSMutableArray *filteredUpnArray;
 @property (strong,nonatomic) NSMutableArray *objects;
 @property IBOutlet UISearchBar *upnSearchBar;
 
+-(void) lookupInGraph:(NSString*)searchString;
 
 @end
