@@ -36,9 +36,6 @@
     upnArray = [NSMutableArray array];
 
     
-    // Initialize the filteredCandyArray with a capacity equal to the candyArray's capacity
-    self.filteredUpnArray = [NSMutableArray arrayWithCapacity:[upnArray count]];
-    
     // Reload the table
     [self.tableView reloadData];
     self.detailViewController = (DetailViewController *)[[self.splitViewController.viewControllers lastObject] topViewController];
@@ -68,12 +65,8 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
-    // Check to see whether the normal table or search results table is being displayed and return the count from the appropriate array
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
+
         return [upnArray count];
-    } else {
-        return [upnArray count];
-    }
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
@@ -85,12 +78,8 @@
     }
     
     User *user = nil;
-    // Check to see whether the normal table or search results table is being displayed and set the Candy object from the appropriate array
-    if (tableView == self.searchDisplayController.searchResultsTableView) {
-        user = [upnArray objectAtIndex:indexPath.row];
-    } else {
-        user = [upnArray objectAtIndex:indexPath.row];
-    }
+     user = [upnArray objectAtIndex:indexPath.row];
+
     
     // Configure the cell
     cell.textLabel.text = user.upn;
@@ -138,11 +127,6 @@ if (searchText.length > 0) {
     
     [self lookupInGraph:searchText];
     [self.tableView reloadData];
-    
-
-    
-    
-    
     
     
 }
