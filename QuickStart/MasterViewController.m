@@ -9,13 +9,18 @@
 #import "MasterViewController.h"
 #import "DetailViewController.h"
 #import "User.h"
-#import "GraphAPICaller.h"
+#import "NXOAuth2.h"
+#import "AppData.h"
+#import "LoginViewController.h"
 
 @implementation MasterViewController
 
 @synthesize upnArray;
 @synthesize upnSearchBar;
 @synthesize filteredUpnArray;
+
+
+
 
 - (void)awakeFromNib {
     [super awakeFromNib];
@@ -28,13 +33,29 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
+    
+    NXOAuth2AccountStore *store = [NXOAuth2AccountStore sharedStore];
+    NSArray *accounts = [store accountsWithAccountType:@"myGraphService"];
+    
+        if (accounts.count == 0) {
+        
+        dispatch_async(dispatch_get_main_queue(),^ {
+            
+            LoginViewController* userSelectController = [self.storyboard instantiateViewControllerWithIdentifier:@"LoginUserView"];
+            [self.navigationController pushViewController:userSelectController animated:YES];
+        });
+        }
+
+
+    
     [self.searchDisplayController.searchResultsTableView registerClass:[UITableViewCell class] forCellReuseIdentifier:@"TaskPrototypeCell"];
     
     // Do any additional setup after loading the view, typically from a nib.
     
     // Sample Data for upnArray
+    
     upnArray = [NSMutableArray array];
-
+    
     
     // Reload the table
     [self.tableView reloadData];
@@ -56,6 +77,32 @@
 }
 
 #pragma mark - Segues
+
+- (void)requestOAuth2ProtectedDetails {
+    
+    AppData* data = [AppData getInstance];
+    NXOAuth2AccountStore *store = [NXOAuth2AccountStore sharedStore];
+    NSArray *accounts = [store accountsWithAccountType:@"myGraphService"];
+    [NXOAuth2Request performMethod:@"GET"
+                        onResource:[NSURL URLWithString:data.taskWebApiUrlString]
+                   usingParameters:nil
+                       withAccount:accounts[0]
+               sendProgressHandler:^(unsigned long long bytesSend, unsigned long long bytesTotal) {
+                   // e.g., update a progress indicator
+               }
+                   responseHandler:^(NSURLResponse *response, NSData *responseData, NSError *error) {
+                       // Process the response
+                       if (responseData) {
+                           NSError *error;
+                           NSDictionary *userInfo = [NSJSONSerialization JSONObjectWithData:responseData options:NSJSONReadingMutableContainers error:&error];
+                           NSLog(@"%@", userInfo);
+                       }
+                       if (error) {
+                           NSLog(@"%@", error.localizedDescription);
+                       }
+                   }
+     ];
+}
 
 
 #pragma mark - Table View
@@ -90,34 +137,46 @@
 
 
 
+
+
+
+
 -(void)lookupInGraph:(NSString *)searchText {
 if (searchText.length > 0) {
     
     
-        [GraphAPICaller searchUserList:searchText parent:self completionBlock:^(NSMutableArray* returnedUpns, NSError* error) {
-            if (returnedUpns) {
-                
-                
-                upnArray = returnedUpns;
-                
-                
-            }
-            else
-            {
-                UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:nil message:[[NSString alloc]initWithFormat:@"Error : %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"Retry" otherButtonTitles:@"Cancel", nil];
-                
-                [alertView setDelegate:self];
-                
-                dispatch_async(dispatch_get_main_queue(),^ {
-                    [alertView show];
-                });
-            }
-            
-            
-        }];
+    [self requestOAuth2ProtectedDetails];
+        
+    };
+    
+//    NSString *graphURL = [NSString stringWithFormat:@"%@%@/users?api-version=%@&$filter=startswith(userPrincipalName, '%@')", data.taskWebApiUrlString, data.tenant, data.apiversion, searchString];
+//    
+//
+//       
+//        [GraphAPICaller searchUserList:searchText completionBlock:^(NSMutableArray* returnedUpns, NSError* error) {
+//            if (returnedUpns) {
+//                
+//                
+//                upnArray = returnedUpns;
+//                
+//                
+//            }
+//            else
+//            {
+//                UIAlertView *alertView = [[UIAlertView alloc]initWithTitle:nil message:[[NSString alloc]initWithFormat:@"Error : %@", error.localizedDescription] delegate:nil cancelButtonTitle:@"Retry" otherButtonTitles:@"Cancel", nil];
+//                
+//                [alertView setDelegate:self];
+//                
+//                dispatch_async(dispatch_get_main_queue(),^ {
+//                    [alertView show];
+//                });
+//            }
+//            
+//            
+//        }];
     
     
-} }
+} 
 
 
 #pragma mark Content Filtering

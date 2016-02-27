@@ -7,6 +7,7 @@
 //
 
 #import "AppData.h"
+#import "NXOAuth2.h"
 
 @implementation AppData
 
@@ -17,6 +18,7 @@
     
     dispatch_once(&onceToken, ^{
         instance = [[self alloc] init];
+        
         NSDictionary *dictionary = [NSDictionary dictionaryWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"settings" ofType:@"plist"]];
         instance.clientId = [dictionary objectForKey:@"clientId"];
         instance.authority = [dictionary objectForKey:@"authority"];
@@ -25,6 +27,7 @@
         instance.taskWebApiUrlString = [dictionary objectForKey:@"graphAPI"];
         instance.apiversion = [dictionary objectForKey:@"api-version"];
         instance.tenant = [dictionary objectForKey:@"tenant"];
+        instance.secret = [dictionary objectForKey:@"secret"];
         
     });
     

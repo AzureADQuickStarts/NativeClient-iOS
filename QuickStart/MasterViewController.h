@@ -17,7 +17,11 @@
 @property (strong,nonatomic) NSMutableArray *filteredUpnArray;
 @property (strong,nonatomic) NSMutableArray *objects;
 @property IBOutlet UISearchBar *upnSearchBar;
+@property (weak, nonatomic) IBOutlet UIWebView *loginView;
 
 -(void) lookupInGraph:(NSString*)searchString;
+-(void) setupOAuth2AccountStore;
+-(void) requestOAuth2Access;
+- (void)requestOAuth2ProtectedDetails;
 
 @end

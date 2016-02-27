@@ -3,18 +3,20 @@
 <plist version="1.0">
 <dict>
 	<key>authority</key>
-	<string>https://login.windows.net/common</string>
+	<string>https://login.microsoftonline.com/common</string>
 	<key>clientId</key>
-	<string>e6d65cc4-f9e8-444a-9ba6-c3c82ce8086b</string>
+	<string>bf52924d-a655-41a9-937c-08fda967e7e7</string>
 	<key>resourceString</key>
-	<string>https://graph.windows.net/</string>
+	<string>https://graph.microsoft.com</string>
 	<key>redirectUri</key>
-	<string>msauth://com.microsoft.windowsazure.activedirectory.samples.microsofttasks</string>
+	<string>urn:ietf:wg:oauth:2.0:oob</string>
 	<key>graphAPI</key>
-	<string>https://graph.windows.net/</string>
+	<string>https://graph.microsoft.com/v1.0/me/</string>
 	<key>api-version</key>
 	<string>1.5</string>
 	<key>tenant</key>
 	<string>kidventus.com</string>
+	<key>secret</key>
+	<string></string>
 </dict>
 </plist>

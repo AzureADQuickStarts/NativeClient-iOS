@@ -7,8 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		10DBB82422D718C60ED09A71 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A311A42C3413097EBA882893 /* libPods.a */; };
-		B815A6A21B1CEBB0005AC51D /* GraphAPICaller.m in Sources */ = {isa = PBXBuildFile; fileRef = B815A6A11B1CEBB0005AC51D /* GraphAPICaller.m */; };
 		B815A6A51B1CED1A005AC51D /* settings.plist in Resources */ = {isa = PBXBuildFile; fileRef = B815A6A41B1CED1A005AC51D /* settings.plist */; };
 		B815A6A81B1CED79005AC51D /* AppData.m in Sources */ = {isa = PBXBuildFile; fileRef = B815A6A71B1CED79005AC51D /* AppData.m */; };
 		B815A6AC1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.m in Sources */ = {isa = PBXBuildFile; fileRef = B815A6AB1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.m */; };
@@ -20,13 +18,14 @@
 		B85B44041B0E5C45006CEFC8 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B85B44031B0E5C45006CEFC8 /* Images.xcassets */; };
 		B85B44071B0E5C45006CEFC8 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B85B44051B0E5C45006CEFC8 /* LaunchScreen.xib */; };
 		B8878C151B0FED8800BAFF6C /* User.m in Sources */ = {isa = PBXBuildFile; fileRef = B8878C141B0FED8800BAFF6C /* User.m */; };
+		B9C3DEA7EE4D662C5581B867 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = A311A42C3413097EBA882893 /* libPods.a */; };
+		FB923FFF1C7E98AF0058B0A8 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = FB923FFE1C7E98AF0058B0A8 /* LoginViewController.m */; };
+		FBE25AFB1C80C7040080AF1F /* NSURLResponse.m in Sources */ = {isa = PBXBuildFile; fileRef = FBE25AFA1C80C7040080AF1F /* NSURLResponse.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		438228CB7E5B40D005EEE685 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		A311A42C3413097EBA882893 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		B815A6A11B1CEBB0005AC51D /* GraphAPICaller.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GraphAPICaller.m; sourceTree = "<group>"; };
-		B815A6A31B1CEBC6005AC51D /* GraphAPICaller.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GraphAPICaller.h; sourceTree = "<group>"; };
 		B815A6A41B1CED1A005AC51D /* settings.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = settings.plist; sourceTree = "<group>"; };
 		B815A6A61B1CED79005AC51D /* AppData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AppData.h; sourceTree = "<group>"; };
 		B815A6A71B1CED79005AC51D /* AppData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppData.m; sourceTree = "<group>"; };
@@ -47,6 +46,15 @@
 		B8878C141B0FED8800BAFF6C /* User.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = User.m; sourceTree = "<group>"; };
 		B8878C161B0FEDB200BAFF6C /* User.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = User.h; sourceTree = "<group>"; };
 		C1606D2F3E2ED2F66165427E /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		FB684E731C7BDC06001C72B1 /* OAuth2Client.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OAuth2Client.framework; path = ../OAuth2Client/build/Debug/OAuth2Client.framework; sourceTree = "<group>"; };
+		FB923FF41C7E77D50058B0A8 /* libOAuth2Client.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOAuth2Client.a; path = "../OAuth2Client/build/Debug-iphoneos/libOAuth2Client.a"; sourceTree = "<group>"; };
+		FB923FF61C7E78BA0058B0A8 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		FB923FF81C7E79220058B0A8 /* OAuth2Client.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OAuth2Client.framework; path = ../OAuth2Client/build/Debug/OAuth2Client.framework; sourceTree = "<group>"; };
+		FB923FFA1C7E798B0058B0A8 /* libOAuth2Client.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libOAuth2Client.a; path = "../OAuth2Client/build/Debug-iphoneos/libOAuth2Client.a"; sourceTree = "<group>"; };
+		FB923FFC1C7E93680058B0A8 /* QuickStart.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = QuickStart.entitlements; sourceTree = "<group>"; };
+		FB923FFD1C7E98AF0058B0A8 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		FB923FFE1C7E98AF0058B0A8 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		FBE25AFA1C80C7040080AF1F /* NSURLResponse.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = NSURLResponse.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,7 +62,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				10DBB82422D718C60ED09A71 /* libPods.a in Frameworks */,
+				B9C3DEA7EE4D662C5581B867 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -73,6 +81,11 @@
 		8F3B63935949BF1159F4C9FB /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				FB923FFA1C7E798B0058B0A8 /* libOAuth2Client.a */,
+				FB923FF81C7E79220058B0A8 /* OAuth2Client.framework */,
+				FB923FF61C7E78BA0058B0A8 /* Security.framework */,
+				FB923FF41C7E77D50058B0A8 /* libOAuth2Client.a */,
+				FB684E731C7BDC06001C72B1 /* OAuth2Client.framework */,
 				A311A42C3413097EBA882893 /* libPods.a */,
 			);
 			name = Frameworks;
@@ -99,6 +112,7 @@
 		B85B43F21B0E5C45006CEFC8 /* QuickStart */ = {
 			isa = PBXGroup;
 			children = (
+				FB923FFC1C7E93680058B0A8 /* QuickStart.entitlements */,
 				B85B43F71B0E5C45006CEFC8 /* AppDelegate.h */,
 				B85B43F81B0E5C45006CEFC8 /* AppDelegate.m */,
 				B85B43FA1B0E5C45006CEFC8 /* MasterViewController.h */,
@@ -111,12 +125,13 @@
 				B85B43F31B0E5C45006CEFC8 /* Supporting Files */,
 				B8878C141B0FED8800BAFF6C /* User.m */,
 				B8878C161B0FEDB200BAFF6C /* User.h */,
-				B815A6A11B1CEBB0005AC51D /* GraphAPICaller.m */,
-				B815A6A31B1CEBC6005AC51D /* GraphAPICaller.h */,
 				B815A6A61B1CED79005AC51D /* AppData.h */,
 				B815A6A71B1CED79005AC51D /* AppData.m */,
 				B815A6AA1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.h */,
 				B815A6AB1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.m */,
+				FB923FFD1C7E98AF0058B0A8 /* LoginViewController.h */,
+				FB923FFE1C7E98AF0058B0A8 /* LoginViewController.m */,
+				FBE25AFA1C80C7040080AF1F /* NSURLResponse.m */,
 			);
 			path = QuickStart;
 			sourceTree = "<group>";
@@ -159,11 +174,17 @@
 		B85B43E81B0E5C45006CEFC8 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = Microsoft;
 				TargetAttributes = {
 					B85B43EF1B0E5C45006CEFC8 = {
 						CreatedOnToolsVersion = 6.3.2;
+						DevelopmentTeam = QPA5Y64RGS;
+						SystemCapabilities = {
+							com.apple.Keychain = {
+								enabled = 1;
+							};
+						};
 					};
 				};
 			};
@@ -237,13 +258,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				FB923FFF1C7E98AF0058B0A8 /* LoginViewController.m in Sources */,
 				B8878C151B0FED8800BAFF6C /* User.m in Sources */,
 				B815A6AC1B1CF1C1005AC51D /* NSDictionary+UrlEncoding.m in Sources */,
 				B85B43F91B0E5C45006CEFC8 /* AppDelegate.m in Sources */,
+				FBE25AFB1C80C7040080AF1F /* NSURLResponse.m in Sources */,
 				B815A6A81B1CED79005AC51D /* AppData.m in Sources */,
 				B815A6B11B1D09E3005AC51D /* MasterViewController.m in Sources */,
 				B85B43F61B0E5C45006CEFC8 /* main.m in Sources */,
-				B815A6A21B1CEBB0005AC51D /* GraphAPICaller.m in Sources */,
 				B85B43FF1B0E5C45006CEFC8 /* DetailViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -291,6 +313,7 @@
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -306,7 +329,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
@@ -344,7 +367,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -357,8 +380,14 @@
 			baseConfigurationReference = 438228CB7E5B40D005EEE685 /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = QuickStart/QuickStart.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = NO;
+				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = QuickStart/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.azureactivedirectory.samples.graph.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -368,8 +397,14 @@
 			baseConfigurationReference = C1606D2F3E2ED2F66165427E /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = QuickStart/QuickStart.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				ENABLE_STRICT_OBJC_MSGSEND = NO;
+				FRAMEWORK_SEARCH_PATHS = "";
 				INFOPLIST_FILE = QuickStart/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_LDFLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.microsoft.azureactivedirectory.samples.graph.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
