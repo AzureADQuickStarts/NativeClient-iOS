@@ -38,7 +38,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     // These settings you don't need to edit unless you wish to attempt deeper scenarios with the app.
     let kGraphURI = "https://graph.microsoft.com"
     let kAuthority = "https://login.microsoftonline.com/common"
-    
+    let kRedirectUri = URL(string: "urn:ietf:wg:oauth:2.0:oob")
     
     var applicationContext : ADAuthenticationContext?
     var accessToken = String()
@@ -98,12 +98,12 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
          
          - withResource:        The resource you wish to access. This will the Microsoft Graph API for this sample.
          - clientId:            The clientID of your application, you should get this from the app portal.
-         - redirectUri:         The redirect URI that your application will listen for to get a response of the Auth code after authentication. Since this a native application where authentication happens inside the app itself, we can listen on a custom URI that the SDK knows to look for from within the application process doing authentication.
+         - redirectUri:         The redirect URI that your application will listen for to get a response of the Auth code after authentication. Since       this a native application where authentication happens inside the app itself, we can listen on a custom URI that the SDK knows to look for from within the application process doing authentication.
          - completionBlock:     The completion block that will be called when the authentication
          flow completes, or encounters an error.
          */
 
-        applicationContext.acquireToken(withResource: kGraphURI, clientId: kClientID, redirectUri:URL(string: "urn:ietf:wg:oauth:2.0:oob")){ (result) in
+        applicationContext.acquireToken(withResource: kGraphURI, clientId: kClientID, redirectUri:kRedirectUri){ (result) in
 
             if (result!.status != AD_SUCCEEDED) {
 
@@ -152,7 +152,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         
         
 
-        applicationContext.acquireTokenSilent(withResource: kGraphURI, clientId: kClientID, redirectUri:URL(string: "urn:ietf:wg:oauth:2.0:oob")) { (result) in
+        applicationContext.acquireTokenSilent(withResource: kGraphURI, clientId: kClientID, redirectUri:kRedirectUri) { (result) in
 
            if (result!.status != AD_SUCCEEDED) {
 
@@ -193,18 +193,13 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         // We retrieve our current account by getting the last account from cache
         // In multi-account applications, account should be retrieved by home account identifier or username instead
 
-        do {
+
 
             let cachedAccounts = ADKeychainTokenCache.defaultKeychain().allItems(nil)
 
             if !(cachedAccounts?.isEmpty)! {
                 return cachedAccounts!.last
             }
-
-        } catch let error as NSError {
-
-            self.updateLogging(text: "Didn't find any accounts in cache: \(error)")
-        }
 
         return nil
     }
@@ -238,7 +233,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     func getContentWithToken() {
 
         // Specify the Graph API endpoint
-        let url = URL(string: kGraphURI)
+        let url = URL(string: kGraphURI + "/v1.0/me/")
         var request = URLRequest(url: url!)
     
         // Set the Authorization header for the request. We use Bearer tokens, so we specify Bearer + the token we got from the result
@@ -267,23 +262,14 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
       */
     @IBAction func signoutButton(_ sender: UIButton) {
 
-        do {
-
             /**
-             Removes all tokens from the cache for this application for the provided account
-
-             - account:    The account to remove from the cache
+             Removes all tokens from the cache for this application for the current account in use
              */
 
+            self.updateLogging(text: "Removing account: \(currentAccount()!.userInformation!.userId)")
             ADKeychainTokenCache.defaultKeychain().removeAll(forUserId: (currentAccount()?.userInformation?.userId)!, clientId: kClientID, error: nil)
-                self.loggingText.text = ""
-                self.signoutButton.isEnabled = false
-                self.updateLogging(text: "Removed account")
+            self.signoutButton.isEnabled = false
 
-        } catch let error as NSError {
-
-            self.updateLogging(text: "Received error signing account out: \(error)")
-        }
     }
 
 }
