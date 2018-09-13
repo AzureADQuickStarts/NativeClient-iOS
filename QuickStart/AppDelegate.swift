@@ -37,22 +37,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-        // The MSAL Logger should be set as early as possible in the app launch sequence, before any MSAL
-        // requests are made.
-        
-        /** When capturing log messages from MSAL you only need to capture either messages where
-         containsPII == YES or containsPII == NO, as log messages are duplicated between the
-         two, however the containsPII version might contain Personally Identifiable Information (PII)
-         about the user being logged in.
-         */
-        
-        MSALLogger.shared().setCallback { (logLevel, message, containsPII) in
-
-            if (!containsPII) {
-                
-                print("%@", message!)
-            }
-        }
 
         return true
     }
@@ -77,17 +61,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
-    }
-    
-    /*! @brief Handles inbound URLs. Checks if the URL matches the redirect URI for a pending
-     AppAuth authorization request and if so, will look for the code in the response.
-     */
-    
-    func application(_ app: UIApplication, open url: URL, options: [UIApplicationOpenURLOptionsKey : Any] = [:]) -> Bool {
-        if MSALPublicClientApplication.handleMSALResponse(url) == true {
-            print("Received callback!")
-        }
-        return true
     }
 
 

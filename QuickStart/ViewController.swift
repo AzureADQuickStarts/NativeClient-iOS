@@ -33,55 +33,44 @@ import ADAL
 class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate {
     
     // Update the below to your client ID you received in the portal. The below is for running the demo only
-    let kClientID = "2a814505-ab4a-41f7-bd09-3fc614ac077c"
+    let kClientID = "1e305e96-7362-45a3-bab5-cb56f46df4c1"
     
     // These settings you don't need to edit unless you wish to attempt deeper scenarios with the app.
-    let kGraphURI = "https://graph.microsoft.com/v1.0/me/"
-    let kScopes: [String] = ["https://graph.microsoft.com/user.read"]
+    let kGraphURI = "https://graph.microsoft.com"
     let kAuthority = "https://login.microsoftonline.com/common"
     
+    
+    var applicationContext : ADAuthenticationContext?
     var accessToken = String()
-    var applicationContext : MSALPublicClientApplication?
-
+    
     @IBOutlet weak var loggingText: UITextView!
     @IBOutlet weak var signoutButton: UIButton!
 
-    /**
-        Setup public client application in viewDidLoad
-    */
 
     override func viewDidLoad() {
-
+        
+        /**
+         Initialize a ADAuthenticationContext with a given authority
+         
+         - authority:           A URL indicating a directory that ADAL can use to obtain tokens. In Azure AD
+                                it is of the form https://<instance/<tenant>, where <instance> is the
+                                directory host (e.g. https://login.microsoftonline.com) and <tenant> is a
+                                identifier within the directory itself (e.g. a domain associated to the
+                                tenant, such as contoso.onmicrosoft.com, or the GUID representing the
+                                TenantID property of the directory)
+         - error                The error that occurred creating the application object, if any, if you're
+                                not interested in the specific error pass in nil.
+         */
+        
+        self.applicationContext = ADAuthenticationContext(authority: kAuthority, error: nil)
         super.viewDidLoad()
 
-        do {
-
-            /**
-
-             Initialize a MSALPublicClientApplication with a given clientID and authority
-
-             - clientId:            The clientID of your application, you should get this from the app portal.
-             - authority:           A URL indicating a directory that MSAL can use to obtain tokens. In Azure AD
-                                    it is of the form https://<instance/<tenant>, where <instance> is the
-                                    directory host (e.g. https://login.microsoftonline.com) and <tenant> is a
-                                    identifier within the directory itself (e.g. a domain associated to the
-                                    tenant, such as contoso.onmicrosoft.com, or the GUID representing the
-                                    TenantID property of the directory)
-             - error                The error that occurred creating the application object, if any, if you're
-                                    not interested in the specific error pass in nil.
-             */
-
-            self.applicationContext = try MSALPublicClientApplication(clientId: kClientID, authority: kAuthority)
-
-        } catch let error {
-            self.loggingText.text = "Unable to create Application Context \(error)"
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
 
         super.viewWillAppear(animated)
-        signoutButton.isEnabled = !self.accessToken.isEmpty
+        signoutButton.isEnabled = (currentAccount()?.accessToken != nil)
     }
     
     /**
@@ -100,19 +89,39 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     }
 
     func acquireTokenInteractively() {
-
+        
         guard let applicationContext = self.applicationContext else { return }
 
-        applicationContext.acquireToken(forScopes: kScopes) { (result, error) in
+        /**
+         
+         Acquire a token for an account
+         
+         - withResource:        The resource you wish to access. This will the Microsoft Graph API for this sample.
+         - clientId:            The clientID of your application, you should get this from the app portal.
+         - redirectUri:         The redirect URI that your application will listen for to get a response of the Auth code after authentication. Since this a native application where authentication happens inside the app itself, we can listen on a custom URI that the SDK knows to look for from within the application process doing authentication.
+         - completionBlock:     The completion block that will be called when the authentication
+         flow completes, or encounters an error.
+         */
 
-            if let error = error {
+        applicationContext.acquireToken(withResource: kGraphURI, clientId: kClientID, redirectUri:URL(string: "urn:ietf:wg:oauth:2.0:oob")){ (result) in
 
-                self.updateLogging(text: "Could not acquire token: \(error)")
+            if (result!.status != AD_SUCCEEDED) {
+
+                if result!.error.domain == ADAuthenticationErrorDomain
+                    && result!.error.code == ADErrorCode.ERROR_UNEXPECTED.rawValue {
+                    
+                    self.updateLogging(text: "Unexpected internal error occured");
+                    
+                } else {
+                    
+                    self.updateLogging(text: result!.error.description)
+                }
+                
                 return
             }
-
+            
             guard let result = result else {
-
+                
                 self.updateLogging(text: "Could not acquire token: No result returned")
                 return
             }
@@ -127,46 +136,46 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     func acquireTokenSilently() {
 
         guard let applicationContext = self.applicationContext else { return }
-
+        
         /**
 
          Acquire a token for an existing account silently
 
-         - forScopes:           Permissions you want included in the access token received
-                                in the result in the completionBlock. Not all scopes are
-                                guaranteed to be included in the access token returned.
-         - account:             An account object that we retrieved from the application object before that the
-                                authentication flow will be locked down to.
+         
+         - withResource:        The resource you wish to access. This will the Microsoft Graph API for this sample.
+         - clientId:            The clientID of your application, you should get this from the app portal.
+         - redirectUri:         The redirect URI that your application will listen for to get a response of the Auth code after                                     authentication. Since this a native application where authentication happens inside the app itself, we can listen on a custom URI that the SDK knows to look for from within the application process doing authentication.
          - completionBlock:     The completion block that will be called when the authentication
-                                flow completes, or encounters an error.
+         flow completes, or encounters an error.
+         
          */
+        
+        
 
-        applicationContext.acquireTokenSilent(forScopes: kScopes, account: self.currentAccount()) { (result, error) in
+        applicationContext.acquireTokenSilent(withResource: kGraphURI, clientId: kClientID, redirectUri:URL(string: "urn:ietf:wg:oauth:2.0:oob")) { (result) in
 
-            if let error = error {
+           if (result!.status != AD_SUCCEEDED) {
 
-                let nsError = error as NSError
-
-                // interactionRequired means we need to ask the user to sign-in. This usually happens
+                // USER_INPUT_NEEDED means we need to ask the user to sign-in. This usually happens
                 // when the user's Refresh Token is expired or if the user has changed their password
                 // among other possible reasons.
 
-                if (nsError.domain == MSALErrorDomain
-                    && nsError.code == MSALErrorCode.interactionRequired.rawValue) {
-
+            if result!.error.domain == ADAuthenticationErrorDomain
+                && result!.error.code == ADErrorCode.ERROR_SERVER_USER_INPUT_NEEDED.rawValue {
+                
                     DispatchQueue.main.async {
                         self.acquireTokenInteractively()
                     }
 
                 } else {
-                    self.updateLogging(text: "Could not acquire token silently: \(error)")
+                    self.updateLogging(text: "Could not acquire token silently: \(result!.error.description)")
                 }
 
                 return
             }
-
+            
             guard let result = result else {
-
+                
                 self.updateLogging(text: "Could not acquire token: No result returned")
                 return
             }
@@ -178,19 +187,18 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         }
     }
 
-    func currentAccount() -> MSALAccount? {
+    func currentAccount() -> ADTokenCacheItem? {
 
-        guard let applicationContext = self.applicationContext else { return nil }
 
-        // We retrieve our current account by getting the first account from cache
+        // We retrieve our current account by getting the last account from cache
         // In multi-account applications, account should be retrieved by home account identifier or username instead
 
         do {
 
-            let cachedAccounts = try applicationContext.accounts()
+            let cachedAccounts = ADKeychainTokenCache.defaultKeychain().allItems(nil)
 
-            if !cachedAccounts.isEmpty {
-                return cachedAccounts.first
+            if !(cachedAccounts?.isEmpty)! {
+                return cachedAccounts!.last
             }
 
         } catch let error as NSError {
@@ -259,10 +267,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
       */
     @IBAction func signoutButton(_ sender: UIButton) {
 
-        guard let applicationContext = self.applicationContext else { return }
-
-        guard let account = self.currentAccount() else { return }
-
         do {
 
             /**
@@ -271,9 +275,10 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
              - account:    The account to remove from the cache
              */
 
-            try applicationContext.remove(account)
-            self.loggingText.text = ""
-            self.signoutButton.isEnabled = false
+            ADKeychainTokenCache.defaultKeychain().removeAll(forUserId: (currentAccount()?.userInformation?.userId)!, clientId: kClientID, error: nil)
+                self.loggingText.text = ""
+                self.signoutButton.isEnabled = false
+                self.updateLogging(text: "Removed account")
 
         } catch let error as NSError {
 
