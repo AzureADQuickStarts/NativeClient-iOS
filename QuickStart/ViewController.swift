@@ -38,6 +38,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     // These settings you don't need to edit unless you wish to attempt deeper scenarios with the app.
     let kGraphURI = "https://graph.microsoft.com"
     let kAuthority = "https://login.microsoftonline.com/common"
+    let kRedirectUri = URL(string: "urn:ietf:wg:oauth:2.0:oob")
     
     
     var applicationContext : ADAuthenticationContext?
@@ -98,12 +99,12 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
          
          - withResource:        The resource you wish to access. This will the Microsoft Graph API for this sample.
          - clientId:            The clientID of your application, you should get this from the app portal.
-         - redirectUri:         The redirect URI that your application will listen for to get a response of the Auth code after authentication. Since this a native application where authentication happens inside the app itself, we can listen on a custom URI that the SDK knows to look for from within the application process doing authentication.
+         - redirectUri:         The redirect URI that your application will listen for to get a response of the Auth code after authentication. Since       this a native application where authentication happens inside the app itself, we can listen on a custom URI that the SDK knows to look for from within the application process doing authentication.
          - completionBlock:     The completion block that will be called when the authentication
          flow completes, or encounters an error.
          */
 
-        applicationContext.acquireToken(withResource: kGraphURI, clientId: kClientID, redirectUri:URL(string: "urn:ietf:wg:oauth:2.0:oob")){ (result) in
+        applicationContext.acquireToken(withResource: kGraphURI, clientId: kClientID, redirectUri:kRedirectUri){ (result) in
             
         guard let result = result else {
                 
@@ -154,7 +155,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         
         
 
-        applicationContext.acquireTokenSilent(withResource: kGraphURI, clientId: kClientID, redirectUri:URL(string: "urn:ietf:wg:oauth:2.0:oob")) { (result) in
+        applicationContext.acquireTokenSilent(withResource: kGraphURI, clientId: kClientID, redirectUri:kRedirectUri) { (result) in
             
             guard let result = result else {
                 
@@ -238,7 +239,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     func getContentWithToken() {
 
         // Specify the Graph API endpoint
-        let url = URL(string: kGraphURI)
+        let url = URL(string: kGraphURI + "/v1.0/me/")
         var request = URLRequest(url: url!)
     
         // Set the Authorization header for the request. We use Bearer tokens, so we specify Bearer + the token we got from the result
@@ -268,7 +269,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     @IBAction func signoutButton(_ sender: UIButton) {
 
             /**
-             Removes all tokens from the cache for this application for the provided account
+             Removes all tokens from the cache for this application for the current account in use
 
              - account:    The account user ID to remove from the cache
              */
