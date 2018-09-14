@@ -104,29 +104,31 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
          */
 
         applicationContext.acquireToken(withResource: kGraphURI, clientId: kClientID, redirectUri:URL(string: "urn:ietf:wg:oauth:2.0:oob")){ (result) in
-
-            if (result!.status != AD_SUCCEEDED) {
-
-                if result!.error.domain == ADAuthenticationErrorDomain
-                    && result!.error.code == ADErrorCode.ERROR_UNEXPECTED.rawValue {
-                    
-                    self.updateLogging(text: "Unexpected internal error occured");
-                    
-                } else {
-                    
-                    self.updateLogging(text: result!.error.description)
-                }
-                
-                return
-            }
             
-            guard let result = result else {
+        guard let result = result else {
                 
                 self.updateLogging(text: "Could not acquire token: No result returned")
                 return
             }
 
-            self.accessToken = result.accessToken!
+            if (result.status != AD_SUCCEEDED) {
+
+                if result.error.domain == ADAuthenticationErrorDomain
+                    && result.error.code == ADErrorCode.ERROR_UNEXPECTED.rawValue {
+                    
+                    self.updateLogging(text: "Unexpected internal error occured");
+                    
+                } else {
+                    
+                    self.updateLogging(text: result.error.description)
+                }
+                
+                return
+            }
+            
+            
+
+            self.accessToken = result.accessToken
             self.updateLogging(text: "Access token is \(self.accessToken)")
             self.updateSignoutButton(enabled: true)
             self.getContentWithToken()
@@ -153,26 +155,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         
 
         applicationContext.acquireTokenSilent(withResource: kGraphURI, clientId: kClientID, redirectUri:URL(string: "urn:ietf:wg:oauth:2.0:oob")) { (result) in
-
-           if (result!.status != AD_SUCCEEDED) {
-
-                // USER_INPUT_NEEDED means we need to ask the user to sign-in. This usually happens
-                // when the user's Refresh Token is expired or if the user has changed their password
-                // among other possible reasons.
-
-            if result!.error.domain == ADAuthenticationErrorDomain
-                && result!.error.code == ADErrorCode.ERROR_SERVER_USER_INPUT_NEEDED.rawValue {
-                
-                    DispatchQueue.main.async {
-                        self.acquireTokenInteractively()
-                    }
-
-                } else {
-                    self.updateLogging(text: "Could not acquire token silently: \(result!.error.description)")
-                }
-
-                return
-            }
             
             guard let result = result else {
                 
@@ -180,7 +162,27 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 return
             }
 
-            self.accessToken = result.accessToken!
+           if (result.status != AD_SUCCEEDED) {
+
+                // USER_INPUT_NEEDED means we need to ask the user to sign-in. This usually happens
+                // when the user's Refresh Token is expired or if the user has changed their password
+                // among other possible reasons.
+
+            if result.error.domain == ADAuthenticationErrorDomain
+                && result.error.code == ADErrorCode.ERROR_SERVER_USER_INPUT_NEEDED.rawValue {
+                
+                    DispatchQueue.main.async {
+                        self.acquireTokenInteractively()
+                    }
+
+                } else {
+                    self.updateLogging(text: "Could not acquire token silently: \(result.error.description)")
+                }
+
+                return
+            }
+
+            self.accessToken = result.accessToken
             self.updateLogging(text: "Refreshed Access token is \(self.accessToken)")
             self.updateSignoutButton(enabled: true)
             self.getContentWithToken()
@@ -193,18 +195,16 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         // We retrieve our current account by getting the last account from cache
         // In multi-account applications, account should be retrieved by home account identifier or username instead
 
-        do {
-
-            let cachedAccounts = ADKeychainTokenCache.defaultKeychain().allItems(nil)
-
-            if !(cachedAccounts?.isEmpty)! {
-                return cachedAccounts!.last
+        
+            guard let cachedTokens = ADKeychainTokenCache.defaultKeychain().allItems(nil) else {
+                self.updateLogging(text: "Didn't find any accounts in cache.")
+                
+                return nil
             }
 
-        } catch let error as NSError {
-
-            self.updateLogging(text: "Didn't find any accounts in cache: \(error)")
-        }
+            if !(cachedTokens.isEmpty) {
+                return cachedTokens.last
+            }
 
         return nil
     }
@@ -267,23 +267,22 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
       */
     @IBAction func signoutButton(_ sender: UIButton) {
 
-        do {
-
             /**
              Removes all tokens from the cache for this application for the provided account
 
-             - account:    The account to remove from the cache
+             - account:    The account user ID to remove from the cache
              */
+            
+            guard let account = currentAccount()?.userInformation?.userId else {
+                self.updateLogging(text: "Didn't find a logged in account in the cache.")
+                
+                return
+            }
 
-            ADKeychainTokenCache.defaultKeychain().removeAll(forUserId: (currentAccount()?.userInformation?.userId)!, clientId: kClientID, error: nil)
+            ADKeychainTokenCache.defaultKeychain().removeAll(forUserId: account, clientId: kClientID, error: nil)
                 self.loggingText.text = ""
                 self.signoutButton.isEnabled = false
                 self.updateLogging(text: "Removed account")
-
-        } catch let error as NSError {
-
-            self.updateLogging(text: "Received error signing account out: \(error)")
-        }
     }
 
 }

@@ -24,9 +24,7 @@
 			<key>CFBundleURLName</key>
 			<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>msal2a814505-ab4a-41f7-bd09-3fc614ac077c</string>
-			</array>
+			<array/>
 		</dict>
 	</array>
 	<key>CFBundleVersion</key>
