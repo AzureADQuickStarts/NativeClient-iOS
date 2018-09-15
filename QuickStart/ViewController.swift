@@ -41,7 +41,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     let kRedirectUri = URL(string: "urn:ietf:wg:oauth:2.0:oob")
     
     var applicationContext : ADAuthenticationContext?
-    var accessToken = String()
     
     @IBOutlet weak var loggingText: UITextView!
     @IBOutlet weak var signoutButton: UIButton!
@@ -77,17 +76,12 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     */
 
     @IBAction func callGraphButton(_ sender: UIButton) {
+            
+        self.callAPI()
 
-        if self.currentAccount() == nil {
-            // We check to see if we have a current logged in account.
-            // If we don't, then we need to sign someone in.
-            self.acquireTokenInteractively()
-        } else {
-            self.acquireTokenSilently()
-        }
     }
 
-    func acquireTokenInteractively() {
+    func acquireToken(completion: @escaping (_ success: Bool) -> Void) {
         
         guard let applicationContext = self.applicationContext else { return }
 
@@ -128,14 +122,13 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 return
             }
             
-            self.accessToken = result.accessToken
-            self.updateLogging(text: "Access token is \(self.accessToken)")
+            self.updateLogging(text: "Access token is \(String(describing: result.accessToken))")
             self.updateSignoutButton(enabled: true)
-            self.getContentWithToken()
+            completion(true)
         }
     }
 
-    func acquireTokenSilently() {
+    func acquireTokenSilently(completion: @escaping (_ success: Bool) -> Void) {
 
         guard let applicationContext = self.applicationContext else { return }
         
@@ -173,8 +166,11 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 && result.error.code == ADErrorCode.ERROR_SERVER_USER_INPUT_NEEDED.rawValue {
                 
                     DispatchQueue.main.async {
-                        self.acquireTokenInteractively()
-                    }
+                        self.acquireToken() { (success) -> Void in
+                            if success {
+                                
+                            }
+                        } }
 
                 } else {
                     self.updateLogging(text: "Could not acquire token silently: \(result.error.description)")
@@ -183,10 +179,9 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 return
             }
 
-            self.accessToken = result.accessToken
-            self.updateLogging(text: "Refreshed Access token is \(self.accessToken)")
+            self.updateLogging(text: "Refreshed Access token is \(String(describing: result.accessToken))")
             self.updateSignoutButton(enabled: true)
-            self.getContentWithToken()
+            completion(true)
         }
     }
 
@@ -236,19 +231,55 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         built in URLSession to create a connection.
      */
 
-    func getContentWithToken() {
+    func callAPI(retry: Bool = true) {
 
         // Specify the Graph API endpoint
         let url = URL(string: kGraphURI + "/v1.0/me/")
         var request = URLRequest(url: url!)
+        
+        guard let accessToken = currentAccount()?.accessToken else {
+            // We haven't signed in yet, so let's do so now, then retry.
+            // To ensure we don't prompt the user twice,
+            // we set retry to false. If acquireToken() has some
+            // other issue we don't want an infinite loop.
+            
+            if retry {
+                
+                self.acquireToken() { (success) -> Void in
+                    if success {
+                        self.callAPI(retry: false)
+                    }
+                }
+            }
+            
+            return
+        }
     
         // Set the Authorization header for the request. We use Bearer tokens, so we specify Bearer + the token we got from the result
-        request.setValue("Bearer \(self.accessToken)", forHTTPHeaderField: "Authorization")
+        request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
 
         URLSession.shared.dataTask(with: request) { data, response, error in
 
             if let error = error {
                 self.updateLogging(text: "Couldn't get graph result: \(error)")
+                
+                // Sometimes the server API will reject a token if it is expired or needs some
+                // other interaction from the authentication service. You should always refresh the
+                // token on a failure just to make sure that you cannot recover.
+                
+                if retry {
+                    // We will try to refresh the token silently first. This way if there are any
+                    // issues that can be resolved by getting a new access token from the refresh
+                    // token, we avoid prompting the user. If user interaction is required, the
+                    // acquireTokenSilently() will call acquireToken()
+                    
+                        self.acquireTokenSilently() { (success) -> Void in
+                            if success {
+                                self.callAPI(retry: false)
+                            }
+                        }
+                }
+                
                 return
             }
 
