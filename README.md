@@ -13,22 +13,8 @@ To build the complete working application, you’ll need to:
 
 To get started, [download the completed sample](https://github.com/AzureADQuickStarts/NativeClient-iOS/archive/complete.zip).  You'll also need an Azure AD tenant in which you can create users and register an application.  If you don't already have a tenant, [learn how to get one](active-directory-howto-tenant.md).
 
-## *1. Determine what your Redirect URI will be for iOS*
 
-In order to securely launch your applications in certain SSO scenarios we require that you create a **Redirect URI** in a particular format. A Redirect URI is used to ensure that the tokens return to the correct application that asked for them.
-
-The iOS format for a Redirect URI is:
-
-```
-<app-scheme>://<bundle-id>
-```
-
-- 	**aap-scheme** - This is registered in your XCode project. It is how other applications can call you. You can find this under Info.plist -> URL types -> URL Identifier. You should create one if you don't already have one or more configured.
-- 	**bundle-id** - This is the Bundle Identifier found under "identity" un your project settings in XCode.
-
-An example for this QuickStart code would be: ***msquickstart://com.microsoft.identity.client.sample.quickstart***
-
-## *2. Create an Application*
+## *1. Create an Application*
 To enable your app to get tokens, you'll first need to create an app in your Azure AD tenant and grant it permission to access the Azure AD Graph API:
 
 -	Sign into the Azure Management Portal
@@ -37,11 +23,11 @@ To enable your app to get tokens, you'll first need to create an app in your Azu
 -	Click the **Applications** tab, and click **Add** in the bottom drawer.
 -	Follow the prompts and create a new **Native Client Application**.
     -	The **Name** of the application will describe your application to end-users
-    -	The **Redirect Uri** is a scheme and string combination that Azure AD will use to return token responses.  Enter a value specific to your application based on the information above.
+    -	The **Redirect Uri** is a scheme and string combination that Azure AD will use to return token responses.  We use the default value for native applications, `urn:ietf:wg:oauth:2.0:oob`
 -	Once you've completed registration, AAD will assign your app a unique client identifier.  You'll need this value in the next sections, so copy it from the **Configure** tab.
 - Also in **Configure** tab, locate the "Permissions to Other Applications" section.  For the "Azure Active Directory" application, add the **Access Your Organization's Directory** permission under **Delegated Permissions**.  This will enable your application to query the Graph API for users.
 
-## *3. Install & Configure ADAL*
+## *2. Install & Configure ADAL*
 Now that you have an application in Azure AD, you can install ADAL and write your identity-related code.  In order for ADAL to be able to communicate with Azure AD, you need to provide it with some information about your app registration.
 -	Begin by adding ADAL to the project using Cocapods.
 
@@ -65,11 +51,11 @@ $ pod install
 $ open QuickStart.xcworkspace
 ```
 
--	In the QuickStart project, open the file `sViewController.swift`.  Replace the values of the elements in the section to reflect the values you input into the Azure Portal.  Your code will reference these values whenever it uses ADAL.
+-	In the QuickStart project, open the file `ViewController.swift`.  Replace the values of the elements in the section to reflect the values you input into the Azure Portal.  Your code will reference these values whenever it uses ADAL.
     -	The `kClientID` is the clientId of your application you copied from the portal.
     -	The `kRedirectUri` is the redirect url you registered in the portal.
 
-## *4.	Use ADAL to Get Tokens from AAD*
+## *3.	Use ADAL to Get Tokens from AAD*
 The basic principle behind ADAL is that whenever your app needs an access token, it simply calls a completionBlock `acquireToken`, and ADAL does the rest.  
 
 -	In the `QuickStart` project, open `ViewController.swift` and locate the `// TODO: getToken interactively.` comment near the top.  This is where you pass ADAL the coordinates through a CompletionBlock to communicate with Azure AD and tell it how to cache tokens.
@@ -153,7 +139,7 @@ func acquireTokenInteractively() {
 ```
 
 
-## Step 5: Build and Run the application
+## *4. Build and Run the application*
 
 
 

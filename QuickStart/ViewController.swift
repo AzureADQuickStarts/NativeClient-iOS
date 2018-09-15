@@ -40,13 +40,11 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     let kAuthority = "https://login.microsoftonline.com/common"
     let kRedirectUri = URL(string: "urn:ietf:wg:oauth:2.0:oob")
     
-    
     var applicationContext : ADAuthenticationContext?
     var accessToken = String()
     
     @IBOutlet weak var loggingText: UITextView!
     @IBOutlet weak var signoutButton: UIButton!
-
 
     override func viewDidLoad() {
         
@@ -99,7 +97,10 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
          
          - withResource:        The resource you wish to access. This will the Microsoft Graph API for this sample.
          - clientId:            The clientID of your application, you should get this from the app portal.
-         - redirectUri:         The redirect URI that your application will listen for to get a response of the Auth code after authentication. Since       this a native application where authentication happens inside the app itself, we can listen on a custom URI that the SDK knows to look for from within the application process doing authentication.
+         - redirectUri:         The redirect URI that your application will listen for to get a response of the
+                                Auth code after authentication. Since this a native application where authentication
+                                happens inside the app itself, we can listen on a custom URI that the SDK knows to
+                                look for from within the application process doing authentication.
          - completionBlock:     The completion block that will be called when the authentication
          flow completes, or encounters an error.
          */
@@ -127,8 +128,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 return
             }
             
-            
-
             self.accessToken = result.accessToken
             self.updateLogging(text: "Access token is \(self.accessToken)")
             self.updateSignoutButton(enabled: true)
@@ -143,13 +142,14 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         /**
 
          Acquire a token for an existing account silently
-
-         
          - withResource:        The resource you wish to access. This will the Microsoft Graph API for this sample.
          - clientId:            The clientID of your application, you should get this from the app portal.
-         - redirectUri:         The redirect URI that your application will listen for to get a response of the Auth code after                                     authentication. Since this a native application where authentication happens inside the app itself, we can listen on a custom URI that the SDK knows to look for from within the application process doing authentication.
+         - redirectUri:         The redirect URI that your application will listen for to get a response of the
+                                Auth code after authentication. Since this a native application where authentication
+                                happens inside the app itself, we can listen on a custom URI that the SDK knows to
+                                look for from within the application process doing authentication.
          - completionBlock:     The completion block that will be called when the authentication
-         flow completes, or encounters an error.
+                                flow completes, or encounters an error.
          
          */
         
@@ -270,7 +270,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
 
             /**
              Removes all tokens from the cache for this application for the current account in use
-
              - account:    The account user ID to remove from the cache
              */
             
