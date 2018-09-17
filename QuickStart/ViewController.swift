@@ -169,8 +169,13 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                         self.acquireToken() { (success) -> Void in
                             if success {
                                 
+                                completion(true)
+                            } else {
+                                self.updateLogging(text: "After determining we needed user input, could not acquire token: \(result.error.description)")
                             }
-                        } }
+                            
+                        }
+                }
 
                 } else {
                     self.updateLogging(text: "Could not acquire token silently: \(result.error.description)")
@@ -193,13 +198,20 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
 
         
             guard let cachedTokens = ADKeychainTokenCache.defaultKeychain().allItems(nil) else {
-                self.updateLogging(text: "Didn't find any accounts in cache.")
+                self.updateLogging(text: "Didn't find a default cache. This is very unusual.")
                 
                 return nil
             }
 
             if !(cachedTokens.isEmpty) {
-                return cachedTokens.last
+                
+                // In the token cache, refresh tokens and access tokens are separate cache entries.
+                // Therefore, you need to keep looking until you find an entry with an access token.
+                for (_, cachedToken) in cachedTokens.enumerated() {
+                    if cachedToken.accessToken != nil {
+                        return cachedToken
+                    }
+                }
             }
 
         return nil
@@ -250,8 +262,10 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                         self.callAPI(retry: false)
                     }
                 }
+            } else {
+                
+                self.updateLogging(text: "Couldn't get access token and we were told to not retry.")
             }
-            
             return
         }
     
