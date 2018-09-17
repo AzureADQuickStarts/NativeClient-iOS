@@ -168,7 +168,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                     DispatchQueue.main.async {
                         self.acquireToken() { (success) -> Void in
                             if success {
-                                
                                 completion(true)
                             } else {
                                 self.updateLogging(text: "After determining we needed user input, could not acquire token: \(result.error.description)")
