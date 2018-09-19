@@ -30,6 +30,10 @@ import ADAL
 
 /// 😃 A View Controller that will respond to the events of the Storyboard.
 
+// Note that this is written to be one QuickStart file and meant to demonstrate basic concepts
+// with easy to follow flow control and readable syntax. For a sample that demonstrates production
+// quality Swift code check out the /Samples folder in the SDK repository.
+
 class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate {
     
     // Update the below to your client ID you received in the portal. The below is for running the demo only
@@ -106,6 +110,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         guard let result = result else {
                 
                 self.updateLogging(text: "Could not acquire token: No result returned")
+                completion(false)
                 return
             }
 
@@ -120,10 +125,11 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 } else {
                     
                     self.updateLogging(text: result.error.description)
-                    completion(false)
+                    
                 }
                 
-                return
+                completion(false)
+                
             }
             
             self.updateLogging(text: "Access token is \(String(describing: result.accessToken))")
@@ -157,6 +163,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
             guard let result = result else {
                 
                 self.updateLogging(text: "Could not acquire token: No result returned")
+                completion(false)
                 return
             }
 
@@ -185,7 +192,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                     self.updateLogging(text: "Could not acquire token silently: \(result.error.description)")
                 }
 
-                return
+                completion(false)
             }
 
             self.updateLogging(text: "Refreshed Access token is \(String(describing: result.accessToken))")
@@ -279,42 +286,47 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         
         dataTask = defaultSession.dataTask(with: request) { data, response, error in
             defer { self.dataTask = nil }
-            
+                
             if let error = error {
                 self.updateLogging(text: "Couldn't get graph result: \(error)")
-                
-                // Sometimes the server API will reject a token if it is expired or needs some
-                // other interaction from the authentication service. You should always refresh the
-                // token on a failure just to make sure that you cannot recover.
+
                 
             } else if let _ = data,
-                    let response = response as? HTTPURLResponse,
-                    response.statusCode == 401 {
+                let response = response as? HTTPURLResponse,
+                response.statusCode == 200 {
                 
-                    if retry {
-                        // We will try to refresh the token silently first. This way if there are any
-                        // issues that can be resolved by getting a new access token from the refresh
-                        // token, we avoid prompting the user. If user interaction is required, the
-                        // acquireTokenSilently() will call acquireToken()
-                        
-                            self.acquireTokenSilently() { (success) -> Void in
-                                if success {
-                                    self.callAPI(retry: false)
-                                }
-                            }
-                    } else {
-                        self.updateLogging(text: "Couldn't access API with current access token, and we were told to not retry.")
-                        
-                    }
+                guard let result = try? JSONSerialization.jsonObject(with: data!, options: []) else {
+                    self.updateLogging(text: "Couldn't deserialize result JSON")
+                    return
                 }
+                self.updateLogging(text: "Result from Graph: \(result))")
+                
+            // Sometimes the server API will throw HTTP 401: Unauthorized if it is expired or needs some
+            // other interaction from the authentication service. You should always refresh the
+            // token on first failure just to make sure that you cannot recover.
+                
+            } else if let _ = data,
+                let response = response as? HTTPURLResponse,
+                response.statusCode == 401 {
             
-            guard let result = try? JSONSerialization.jsonObject(with: data!, options: []) else {
-
-                self.updateLogging(text: "Couldn't deserialize result JSON")
-                return
-            }
-            self.updateLogging(text: "Result from Graph: \(result))")
+                if retry {
+                    // We will try to refresh the token silently first. This way if there are any
+                    // issues that can be resolved by getting a new access token from the refresh
+                    // token, we avoid prompting the user. If user interaction is required, the
+                    // acquireTokenSilently() will call acquireToken()
+                    
+                        self.acquireTokenSilently() { (success) -> Void in
+                            if success {
+                                self.callAPI(retry: false)
+                            }
+                        }
+                } else {
+                    self.updateLogging(text: "Couldn't access API with current access token, and we were told to not retry.")
+                    
+                }
+              }
         }
+        
         dataTask?.resume()
     }
 
