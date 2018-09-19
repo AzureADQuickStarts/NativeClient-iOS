@@ -115,10 +115,12 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                     && result.error.code == ADErrorCode.ERROR_UNEXPECTED.rawValue {
                     
                     self.updateLogging(text: "Unexpected internal error occured");
+                    completion(false)
                     
                 } else {
                     
                     self.updateLogging(text: result.error.description)
+                    completion(false)
                 }
                 
                 return
@@ -173,6 +175,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                                 completion(true)
                             } else {
                                 self.updateLogging(text: "After determining we needed user input, could not acquire token: \(result.error.description)")
+                                completion(false)
                             }
                             
                         }
