@@ -290,6 +290,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
             if let error = error {
                 self.updateLogging(text: "Couldn't get graph result: \(error)")
 
+                // If we get HTTP 200: Success, go ahead and parse the JSON
                 
             } else if let _ = data,
                 let response = response as? HTTPURLResponse,
