@@ -194,7 +194,8 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     func currentAccount() -> ADTokenCacheItem? {
 
 
-        // We retrieve our current account by getting the last account from cache
+        // We retrieve our current account by getting the last account from cache. This isn't best practice. You should rely
+        // on AcquireTokenSilent and store the UPN separately in your application. For simplicity of the sample, we just use the cache.
         // In multi-account applications, account should be retrieved by home account identifier or username instead
 
         
@@ -310,7 +311,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 return
             }
             self.updateLogging(text: "Result from Graph: \(result))")
-
         }
         dataTask?.resume()
     }
@@ -336,6 +336,5 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 self.signoutButton.isEnabled = false
                 self.updateLogging(text: "Removed account")
     }
-
 }
 
