@@ -39,8 +39,10 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     let kGraphURI = "https://graph.microsoft.com"
     let kAuthority = "https://login.microsoftonline.com/common"
     let kRedirectUri = URL(string: "urn:ietf:wg:oauth:2.0:oob")
+    let defaultSession = URLSession(configuration: .default)
     
     var applicationContext : ADAuthenticationContext?
+    var dataTask: URLSessionDataTask?
     
     @IBOutlet weak var loggingText: UITextView!
     @IBOutlet weak var signoutButton: UIButton!
@@ -270,9 +272,10 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     
         // Set the Authorization header for the request. We use Bearer tokens, so we specify Bearer + the token we got from the result
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
-
-        URLSession.shared.dataTask(with: request) { data, response, error in
-
+        
+        dataTask = defaultSession.dataTask(with: request) { data, response, error in
+            defer { self.dataTask = nil }
+            
             if let error = error {
                 self.updateLogging(text: "Couldn't get graph result: \(error)")
                 
@@ -280,31 +283,36 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 // other interaction from the authentication service. You should always refresh the
                 // token on a failure just to make sure that you cannot recover.
                 
-                if retry {
-                    // We will try to refresh the token silently first. This way if there are any
-                    // issues that can be resolved by getting a new access token from the refresh
-                    // token, we avoid prompting the user. If user interaction is required, the
-                    // acquireTokenSilently() will call acquireToken()
-                    
-                        self.acquireTokenSilently() { (success) -> Void in
-                            if success {
-                                self.callAPI(retry: false)
-                            }
-                        }
-                }
+            } else if let _ = data,
+                    let response = response as? HTTPURLResponse,
+                    response.statusCode == 401 {
                 
-                return
-            }
-
+                    if retry {
+                        // We will try to refresh the token silently first. This way if there are any
+                        // issues that can be resolved by getting a new access token from the refresh
+                        // token, we avoid prompting the user. If user interaction is required, the
+                        // acquireTokenSilently() will call acquireToken()
+                        
+                            self.acquireTokenSilently() { (success) -> Void in
+                                if success {
+                                    self.callAPI(retry: false)
+                                }
+                            }
+                    } else {
+                        self.updateLogging(text: "Couldn't access API with current access token, and we were told to not retry.")
+                        
+                    }
+                }
+            
             guard let result = try? JSONSerialization.jsonObject(with: data!, options: []) else {
 
                 self.updateLogging(text: "Couldn't deserialize result JSON")
                 return
             }
-
             self.updateLogging(text: "Result from Graph: \(result))")
 
-        }.resume()
+        }
+        dataTask?.resume()
     }
 
       /**
