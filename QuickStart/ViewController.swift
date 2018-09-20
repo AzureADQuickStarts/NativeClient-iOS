@@ -285,30 +285,32 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         request.setValue("Bearer \(accessToken)", forHTTPHeaderField: "Authorization")
         
         dataTask = defaultSession.dataTask(with: request) { data, response, error in
-            defer { self.dataTask = nil }
                 
             if let error = error {
                 self.updateLogging(text: "Couldn't get graph result: \(error)")
-
-                // If we get HTTP 200: Success, go ahead and parse the JSON
-                
-            } else if let _ = data,
-                let response = response as? HTTPURLResponse,
-                response.statusCode == 200 {
+            }
+            
+            guard let httpResponse = response as? HTTPURLResponse else {
+                    self.updateLogging(text: "Couldn't get graph result")
+                    return
+            }
+             
+            // If we get HTTP 200: Success, go ahead and parse the JSON
+            if httpResponse.statusCode == 200 {
                 
                 guard let result = try? JSONSerialization.jsonObject(with: data!, options: []) else {
                     self.updateLogging(text: "Couldn't deserialize result JSON")
                     return
                 }
-                self.updateLogging(text: "Result from Graph: \(result))")
                 
+                self.updateLogging(text: "Result from Graph: \(result))")
+            }
+            
             // Sometimes the server API will throw HTTP 401: Unauthorized if it is expired or needs some
             // other interaction from the authentication service. You should always refresh the
             // token on first failure just to make sure that you cannot recover.
                 
-            } else if let _ = data,
-                let response = response as? HTTPURLResponse,
-                response.statusCode == 401 {
+            if httpResponse.statusCode == 401 {
             
                 if retry {
                     // We will try to refresh the token silently first. This way if there are any
@@ -325,8 +327,8 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                     self.updateLogging(text: "Couldn't access API with current access token, and we were told to not retry.")
                     
                 }
-              }
-        }
+             }
+            }
         
         dataTask?.resume()
     }
