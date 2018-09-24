@@ -60,6 +60,13 @@
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Tb3-bW-YNy">
+                                <rect key="frame" x="154.66666666666666" y="176" width="65.666666666666657" height="30"/>
+                                <state key="normal" title="Clear Log"/>
+                                <connections>
+                                    <action selector="clearLog:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pR9-cM-qpK"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -75,8 +82,12 @@
                             <constraint firstItem="98g-dc-BPL" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="233" id="Ijz-BV-Ga4"/>
                             <constraint firstItem="2rX-Vv-T1i" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="56" id="Lp8-b1-fGs"/>
                             <constraint firstItem="ifd-fu-zjm" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="Q7t-2d-Wga"/>
+                            <constraint firstItem="Tb3-bW-YNy" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="132" id="Xd4-NM-JsL"/>
                             <constraint firstItem="2rX-Vv-T1i" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="138" id="Z4K-g7-gz9"/>
                             <constraint firstItem="qXW-2z-J7K" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" constant="272" id="fYx-WQ-Vjt"/>
+                            <constraint firstItem="Tb3-bW-YNy" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="gYV-Hl-AYv"/>
+                            <constraint firstItem="Tb3-bW-YNy" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" constant="154.66666666666666" id="q8g-Rh-Tj2"/>
+                            <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="Tb3-bW-YNy" secondAttribute="bottom" constant="572" id="qdS-Hu-jRd"/>
                             <constraint firstItem="ifd-fu-zjm" firstAttribute="centerX" secondItem="9u4-b8-vmX" secondAttribute="centerX" id="sPQ-zQ-ecw"/>
                             <constraint firstItem="ifd-fu-zjm" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="48" id="xek-fW-PhR"/>
                             <constraint firstItem="9u4-b8-vmX" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="yoZ-Uq-Odd"/>
@@ -84,6 +95,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="clearLogButton" destination="Tb3-bW-YNy" id="aOw-7x-WKY"/>
                         <outlet property="loggingText" destination="qXW-2z-J7K" id="uqO-Yw-AsK"/>
                         <outlet property="signoutButton" destination="9u4-b8-vmX" id="OCh-qk-ldv"/>
                     </connections>

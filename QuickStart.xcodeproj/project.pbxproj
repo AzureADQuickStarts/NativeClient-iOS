@@ -14,6 +14,7 @@
 		FBA79EA61E9A038700179A54 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBA79EA41E9A038700179A54 /* Main.storyboard */; };
 		FBA79EA81E9A038700179A54 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = FBA79EA71E9A038700179A54 /* Assets.xcassets */; };
 		FBA79EAB1E9A038700179A54 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = FBA79EA91E9A038700179A54 /* LaunchScreen.storyboard */; };
+		FBDC5AC02158832E00556F8A /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = FBDC5ABF2158832E00556F8A /* Default-568h@2x.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +33,7 @@
 		FBA79EAC1E9A038700179A54 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		FBBE358D1E9C476300460053 /* QuickStart.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; path = QuickStart.xcodeproj; sourceTree = "<group>"; };
 		FBBE35B41E9DAE6C00460053 /* QuickStart.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = QuickStart.entitlements; sourceTree = "<group>"; };
+		FBDC5ABF2158832E00556F8A /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 		FBA79E941E9A038700179A54 = {
 			isa = PBXGroup;
 			children = (
+				FBDC5ABF2158832E00556F8A /* Default-568h@2x.png */,
 				FBBE358D1E9C476300460053 /* QuickStart.xcodeproj */,
 				FBA79E9F1E9A038700179A54 /* QuickStart */,
 				FBA79E9E1E9A038700179A54 /* Products */,
@@ -182,6 +185,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				FBA79EAB1E9A038700179A54 /* LaunchScreen.storyboard in Resources */,
+				FBDC5AC02158832E00556F8A /* Default-568h@2x.png in Resources */,
 				FBA79EA81E9A038700179A54 /* Assets.xcassets in Resources */,
 				FBA79EA61E9A038700179A54 /* Main.storyboard in Resources */,
 			);

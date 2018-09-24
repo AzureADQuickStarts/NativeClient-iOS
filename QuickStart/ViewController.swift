@@ -42,7 +42,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     // These settings you don't need to edit unless you wish to attempt deeper scenarios with the app.
     let kGraphURI = "https://graph.microsoft.com"
     let kAuthority = "https://login.microsoftonline.com/common"
-    let kRedirectUri = URL(string: "urn:ietf:wg:oauth:2.0:oob")
+    let kRedirectUri = URL(string: "x-msauth-mytestiosapp://com.microsoft.identity.client.sample.quickstart")
     let defaultSession = URLSession(configuration: .default)
     
     var applicationContext : ADAuthenticationContext?
@@ -50,7 +50,8 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     
     @IBOutlet weak var loggingText: UITextView!
     @IBOutlet weak var signoutButton: UIButton!
-
+    @IBOutlet weak var clearLogButton: UIButton!
+    
     override func viewDidLoad() {
         
         /**
@@ -62,6 +63,12 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                                 identifier within the directory itself (e.g. a domain associated to the
                                 tenant, such as contoso.onmicrosoft.com, or the GUID representing the
                                 TenantID property of the directory)
+         - sharedGroup:         The shared keychain for your application. This is an optional value that
+                                you can provide that will tell the SDK how to store the tokens so that
+                                additional applications you write can share the same storage and get access
+                                to the same tokens. This allows for your application to get Single Sign-On (SSO)
+                                with other applications you write. These applications must also come from the same
+                                publisher.
          - error                The error that occurred creating the application object, if any, if you're
                                 not interested in the specific error pass in nil.
          */
@@ -86,10 +93,36 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         self.callAPI()
 
     }
+    
+    /**
+    This button will clear the log.
+    */
+    
+    @IBAction func clearLog(_ sender: UIButton) {
+        
+        DispatchQueue.main.async {
+            self.loggingText.text = ""
+        }
+    }
 
     func acquireToken(completion: @escaping (_ success: Bool) -> Void) {
         
         guard let applicationContext = self.applicationContext else { return }
+        guard let user = ADUserIdentifier.init(id: currentAccount()?.userInformation?.userId) else { return }
+        
+        /**
+        This flag will turn on support for using broker applications like Microsoft Authenticator.
+        This is REQUIRED for supporting Conditional Access, Intune MDM, Intune MaM, and SSO with
+        apps outside of your own publisher.
+         
+        It instructs your application to look for a viable broker application on the device and
+        will transition your app to the broker and then back. You'll also need to make sure that
+        the prefix `msauth` is registered in your info.plist under LSApplicationQueriesSchemes and
+        that your own application prefix is registered as a replyURI. For more information, check out
+         https://aka.ms/howtobrokeriosadal for more information.
+        */
+
+        applicationContext.credentialsType = AD_CREDENTIALS_AUTO
 
         /**
          
@@ -104,10 +137,9 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
          - completionBlock:     The completion block that will be called when the authentication
          flow completes, or encounters an error.
          */
+        applicationContext.acquireToken(withResource: kGraphURI, clientId: kClientID, redirectUri: kRedirectUri, promptBehavior: AD_PROMPT_AUTO, userIdentifier: user, extraQueryParameters: nil) { (result) in
 
-        applicationContext.acquireToken(withResource: kGraphURI, clientId: kClientID, redirectUri:kRedirectUri){ (result) in
-            
-        guard let result = result else {
+            guard let result = result else {
                 
                 self.updateLogging(text: "Could not acquire token: No result returned")
                 completion(false)
@@ -319,7 +351,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                             }
                         }
                 } else {
-                    self.updateLogging(text: "Couldn't access API with current access token, and we were told to not retry.")
+                    self.updateLogging(text: "Couldn't access API with current access token, and we were told to not retry. Could Conditional Access be enabled for the account?")
                     
                 }
              }
