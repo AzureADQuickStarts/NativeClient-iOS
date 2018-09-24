@@ -50,6 +50,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     
     @IBOutlet weak var loggingText: UITextView!
     @IBOutlet weak var signoutButton: UIButton!
+    @IBOutlet weak var clearLogButton: UIButton!
 
     override func viewDidLoad() {
         
@@ -86,6 +87,17 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
         self.callAPI()
 
     }
+    
+    /**
+     This button will clear the log.
+     */
+    
+    @IBAction func clearLog(_ sender: UIButton) {
+        
+        DispatchQueue.main.async {
+            self.loggingText.text = ""
+        }
+    }
 
     func acquireToken(completion: @escaping (_ success: Bool) -> Void) {
         
@@ -119,7 +131,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                 if result.error.domain == ADAuthenticationErrorDomain
                     && result.error.code == ADErrorCode.ERROR_UNEXPECTED.rawValue {
                     
-                    self.updateLogging(text: "Unexpected internal error occured");
+                    self.updateLogging(text: "Unexpected internal error occured: \(result.error.description))");
                     completion(false)
                     
                 } else {
@@ -230,24 +242,19 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     }
 
     func updateLogging(text : String) {
-
-        if Thread.isMainThread {
-            self.loggingText.text = text
-        } else {
+        
             DispatchQueue.main.async {
-                self.loggingText.text = text
+                self.loggingText.text += text + "\n\n"
+                let bottom = NSMakeRange(self.loggingText.text.count - 1, 1)
+                self.loggingText.scrollRangeToVisible(bottom)
             }
-        }
     }
 
     func updateSignoutButton(enabled : Bool) {
-        if Thread.isMainThread {
-            self.signoutButton.isEnabled = enabled
-        } else {
+
             DispatchQueue.main.async {
                 self.signoutButton.isEnabled = enabled
             }
-        }
     }
     
     /**
@@ -350,9 +357,8 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
             }
 
             ADKeychainTokenCache.defaultKeychain().removeAll(forUserId: account, clientId: kClientID, error: nil)
-                self.loggingText.text = ""
                 self.signoutButton.isEnabled = false
-                self.updateLogging(text: "Removed account")
+                self.updateLogging(text: "Removed account for: \(account)" )
     }
 }
 
