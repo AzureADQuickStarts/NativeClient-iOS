@@ -65,7 +65,6 @@ The basic principle behind ADAL is that whenever your app needs an access token,
 -	In the `QuickStart` project, open `ViewController.swift` and locate the `// TODO: getToken interactively.` comment near the top.  This is where you pass ADAL the coordinates through a CompletionBlock to communicate with Azure AD and tell it how to cache tokens.
 
 ```Swift
-func acquireTokenInteractively() {
         
    func acquireToken(completion: @escaping (_ success: Bool) -> Void) {
         
