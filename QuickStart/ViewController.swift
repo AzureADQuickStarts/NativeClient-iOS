@@ -63,12 +63,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
                                 identifier within the directory itself (e.g. a domain associated to the
                                 tenant, such as contoso.onmicrosoft.com, or the GUID representing the
                                 TenantID property of the directory)
-         - sharedGroup:         The shared keychain for your application. This is an optional value that
-                                you can provide that will tell the SDK how to store the tokens so that
-                                additional applications you write can share the same storage and get access
-                                to the same tokens. This allows for your application to get Single Sign-On (SSO)
-                                with other applications you write. These applications must also come from the same
-                                publisher.
          - error                The error that occurred creating the application object, if any, if you're
                                 not interested in the specific error pass in nil.
          */
@@ -108,7 +102,6 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     func acquireToken(completion: @escaping (_ success: Bool) -> Void) {
         
         guard let applicationContext = self.applicationContext else { return }
-        guard let user = ADUserIdentifier.init(id: currentAccount()?.userInformation?.userId) else { return }
         
         /**
         This flag will turn on support for using broker applications like Microsoft Authenticator.
@@ -137,7 +130,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
          - completionBlock:     The completion block that will be called when the authentication
          flow completes, or encounters an error.
          */
-        applicationContext.acquireToken(withResource: kGraphURI, clientId: kClientID, redirectUri: kRedirectUri, promptBehavior: AD_PROMPT_AUTO, userIdentifier: user, extraQueryParameters: nil) { (result) in
+        applicationContext.acquireToken(withResource: kGraphURI, clientId: kClientID, redirectUri: kRedirectUri) { (result) in
 
             guard let result = result else {
                 
