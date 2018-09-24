@@ -50,6 +50,7 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
     
     @IBOutlet weak var loggingText: UITextView!
     @IBOutlet weak var signoutButton: UIButton!
+    @IBOutlet weak var clearLogButton: UIButton!
 
     override func viewDidLoad() {
         
@@ -85,6 +86,17 @@ class ViewController: UIViewController, UITextFieldDelegate, URLSessionDelegate 
             
         self.callAPI()
 
+    }
+    
+    /**
+     This button will clear the log.
+     */
+    
+    @IBAction func clearLog(_ sender: UIButton) {
+        
+        DispatchQueue.main.async {
+            self.loggingText.text = ""
+        }
     }
 
     func acquireToken(completion: @escaping (_ success: Bool) -> Void) {
