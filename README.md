@@ -1,5 +1,11 @@
 
 
+> There's a newer version of this sample! Check it out: https://github.com/azure-samples/ms-identity-ios-swift-native
+>
+> This newer sample takes advantage of the Microsoft identity platform(formerly Azure AD v2.0).
+>
+> While still in public preview, every component is supported in production environments
+
 Azure AD provides the Active Directory Authentication Library, or ADAL, for iOS clients that need to access protected resources.  ADAL’s sole purpose in life is to make it easy for your app to get access tokens.  To demonstrate just how easy it is, here we’ll build a Swift application that:
 
 -	Gets access tokens for calling the Azure AD Graph API using the [OAuth 2.0 authentication protocol](https://msdn.microsoft.com/library/azure/dn645545.aspx).
